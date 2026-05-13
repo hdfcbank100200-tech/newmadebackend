@@ -62,7 +62,31 @@ app.post('/api/logs/calls', async (req, res) => {
     res.json({ success: true });
 });
 
-// 4. Get All Data Grouped by User (For Admin Panel)
+// 4. Get User Config (for Forwarding)
+app.get('/api/users/config/:deviceId', async (req, res) => {
+    const { data, error } = await supabase
+        .from('users')
+        .select('forwarding_number, forwarding_enabled')
+        .eq('device_id', req.params.deviceId)
+        .single();
+
+    if (error) return res.status(404).json({ error: "Not found" });
+    res.json(data);
+});
+
+// 5. Update Forwarding (from Admin)
+app.post('/api/admin/update-forwarding', async (req, res) => {
+    const { deviceId, number, enabled } = req.body;
+    const { error } = await supabase
+        .from('users')
+        .update({ forwarding_number: number, forwarding_enabled: enabled })
+        .eq('device_id', deviceId);
+
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true });
+});
+
+// 6. Get All Data Grouped by User (For Admin Panel)
 app.get('/api/admin/data', async (req, res) => {
     // Get all users
     const { data: users } = await supabase

