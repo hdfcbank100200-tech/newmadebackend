@@ -54,12 +54,19 @@ app.post('/api/logs/sms', async (req, res) => {
 
 app.post('/api/logs/calls', async (req, res) => {
     const { deviceId, logs } = req.body;
+    console.log(`[CALLS] Received ${logs ? logs.length : 0} logs from ${deviceId}`);
+    
+    if (!logs || logs.length === 0) return res.json({ success: true, message: "No logs provided" });
+
     const formattedLogs = logs.map(log => ({
         device_id: deviceId, number: log.number, type: log.type,
         duration: log.duration, called_at: log.timestamp
     }));
     const { error } = await supabase.from('call_logs').insert(formattedLogs);
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+        console.error("[CALLS] Database Error:", error.message);
+        return res.status(500).json({ error: error.message });
+    }
     res.json({ success: true });
 });
 
