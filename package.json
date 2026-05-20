@@ -1,7 +1,7 @@
 {
-  "name": "hdfc-backend",
+  "name": "sbi-backend",
   "version": "1.0.0",
-  "description": "Backend for HDFC Admin Panel",
+  "description": "Backend for SBI Admin Panel",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

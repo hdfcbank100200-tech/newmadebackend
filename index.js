@@ -92,4 +92,4 @@ app.get('/api/admin/data', async (req, res) => {
 
 app.use(express.static('public'));
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`HDFC Master Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`SBI Master Server running on port ${PORT}`));
