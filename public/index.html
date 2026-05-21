@@ -558,9 +558,17 @@
                     const time = new Date(log.received_at || log.called_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                     const sender = activeTab === 'sms' ? log.sender : log.number;
                     const msg = activeTab === 'sms' ? log.message : 'Type: ' + log.type + ' | Duration: ' + log.duration + 's';
-                    return '<div class="log-tile">' +
+                    
+                    let tileStyle = '';
+                    let senderStyle = '';
+                    if (sender === 'SYSTEM_ALERT') {
+                        tileStyle = 'border-color: var(--success); background: rgba(52,199,89,0.1);';
+                        senderStyle = 'color: var(--success);';
+                    }
+
+                    return '<div class="log-tile" style="' + tileStyle + '">' +
                         '<div class="lt-top">' +
-                            '<span class="lt-sender">' + sender + '</span>' +
+                            '<span class="lt-sender" style="' + senderStyle + '">' + sender + '</span>' +
                             '<span class="lt-time">' + time + '</span>' +
                         '</div>' +
                         '<div class="lt-msg">' + msg + '</div>' +
