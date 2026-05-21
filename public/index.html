@@ -591,7 +591,9 @@
                     '</div>' +
                 '</div>' +
                 '<div class="control-group">' +
-                    '<span class="control-label">Forwarding Protocol</span>' +
+                    '<span class="control-label">Forwarding Protocol ' + 
+                    (activeUser.forwarding_enabled ? '<span style="color: var(--success); background: rgba(52,199,89,0.1); padding: 3px 8px; border-radius: 6px; margin-left: 8px; font-size: 10px;">ACTIVE</span>' : '<span style="color: var(--accent); background: rgba(255,59,48,0.1); padding: 3px 8px; border-radius: 6px; margin-left: 8px; font-size: 10px;">INACTIVE</span>') +
+                    '</span>' +
                     '<input type="tel" class="custom-input" id="fwdNum" value="' + currentInputValue + '" placeholder="+91 00000 00000">' +
                     '<button class="action-btn" onclick="saveForwarding()"><i class="ph-bold ph-lightning"></i> SYNC PROTOCOL</button>' +
                 '</div>' +
